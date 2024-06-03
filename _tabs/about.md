@@ -11,7 +11,7 @@ order: 1
 - **Discord**: .random6
 - **Github**: [https://github.com/random6-xyz](https://github.com/random6-xyz)
 
-## Organization
+## **Organization**
 
 - 2023 ~ now : Dankook university (Cyber Security)
 - 2023 ~ now : [Aegis](https://cms.dankook.ac.kr/web/club/aegis) (Dankook university)
