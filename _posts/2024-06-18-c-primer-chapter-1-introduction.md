@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[C++ Primer] Chapter 1 Introduction\n"
+title: "[C++ Primer] Chapter 1 Introduction"
 category: [C++]
 date: 2024-06-18 15:08:00 +0900
 tag: [C++, book]
