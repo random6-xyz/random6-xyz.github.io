@@ -1,0 +1,61 @@
+---
+layout: post
+title: "[ETC] Blog Hit Counter"
+category: [ETC]
+date: 2024-08-30 1:50:00 +0900
+tag: [ETC, Hit-Counter]
+description: How I set blog hit counter
+comments: false
+---
+
+## 동기
+
+블로그를 운영하는데 방문자 수 집계가 안 되어서 불편을 겪고 있다.
+
+## 과정
+
+`Github blog hits` 키워드로 검색해보니 다양한 글들이 나왔다. 대표적인 서비스로는 [HITS](https://hits.seeyoufarm.com/)가 있었다. 이 서비스를 이용하기로 했다.
+
+사용 방식을 [HITS](https://hits.seeyoufarm.com/) 사이트에서 옵션 지정을 통해 HTML link를 만들고 이를 블로그에 넣는 것이다.
+
+그래서 `bundle exec jekyll serve` 명령어로 블로그를 테스트 해보려고 했는데... 이런 오류가 떴다. 
+```plaintext
+Could not find gem 'faraday-retry (~> 2.2)' in locally installed gems.
+Run `bundle install` to install missing gems.
+```
+
+써 있는대로 `bundle install`명령어를 실행했더니 또 오류가 떴다.
+```plaintext
+Bundler::PermissionError: There was an error while trying to
+write to `/usr/lib/ruby/gems/3.2.0/cache/uri-0.13.1.gem`. It is
+likely that you need to grant write permissions for that path.
+```
+
+그래서 `sudo`를 앞에 붙이고 실행했다. 그랬더니 실행되긴 하지만 이딴 경고가 뜬다.
+```plaintext
+Don't run Bundler as root. Installing your bundle as root will
+break this application for all non-root users on this machine.
+```
+
+가볍게 무시하고 아까 시도했던 명령어 `bundle exec jekyll serve`를 실행했더니 다른 오류가 터졌다.
+```
+bundler: failed to load command: jekyll (/usr/bin/jekyll)
+<internal:/usr/lib/ruby/site_ruby/3.2.0/rubygems/core_ext/kernel_require.rb>:37:in `require': cannot load such file -- erb (LoadError)
+Did you mean?  drb
+```
+
+이걸 그대로 검색해보니 [이 깃허브 이슈](https://github.com/rails/rails/issues/42373)를 찾았고 pacman으로 `ruby-erb`를 설치하면 된다는 결론을 얻었다.
+
+설치했고 `bundle exec jekyll serve`명령어로 실행하니 경고가 뜨긴 하지만 잘 되었다.
+
+## further research
+
+- `bundle`이라는 명령어가 뭔지도 모르고 그냥 써왔던 것 같아서 찾아보았다.
+	- RubyGems를 다룰 때 프로젝트의 디펜던시를 관리할 떄 쓰는 도구라고 한다. 파이썬의 `pip`같은 느낌인 것 같다.
+	- `install`, `update`, `exec`등과 같은 명령어들이 있고 `exec`의 경우에는 번들의 환경에서 명령어를 실행하는 역할을 해준다.
+- `ruby-erb`는 또 뭔지 찾아보았다.
+	- 루비 라이브러리로 텍스트 파일에 루비코드를 임베드할 때 쓴다고 한다. 여기서 궁금한 점은 루비 라이브러리이면서 왜 `bundler`로 설치하지 않고 시스템의 패키지 매니저로 설치하는지 의문이 생겼다.
+		- `pacman`같은 시스템 패키지 매니저로 설치하는 이유는 시스템 전역 설치를 하기 위해서이다.
+		- `bundler`로 설치하는 경우는 프로젝트에서만 설치하는 것이다
+		- 약간 `python`에서 가상환경에다가 설치하는 것과 시스템 전역에 설치하는 것의 차이인 것 같다.
+
